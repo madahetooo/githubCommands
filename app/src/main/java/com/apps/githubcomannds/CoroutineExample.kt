@@ -1,8 +1,8 @@
 package com.apps.githubcomannds
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.apps.githubcomannds.databinding.ActivityCoroutineExampleBinding
 import kotlinx.coroutines.*
 
@@ -18,15 +18,20 @@ class CoroutineExample : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        GlobalScope.launch(Dispatchers.Default) {
-            delay(5000) // WAIT 5 SECONDS
-            Log.d(TAG, "This is coroutine Thread")
-
-            //Switch the context to be MAIN context
-            withContext(Dispatchers.Main){
-                binding.txUpdatedText.text = "Updated Text"
-            }
+        GlobalScope.launch (Dispatchers.IO){
+            val result1 = async { doNetworkCall1() }
+            val result2 = async { doNetworkCall2() }
+            Log.d(TAG,"Result 1 is equal to :  ${result1.await()}")
+            Log.d(TAG,"Result 2 is equal to :  ${result2.await()}")
         }
-        Log.d(TAG, "This is Main Thread")
+    }
+
+    suspend fun doNetworkCall1() :String{
+        delay(5000)
+        return "Network Call Result 1"
+    }
+    suspend fun doNetworkCall2() :String{
+        delay(5000)
+        return "Network Call Result 2"
     }
 }
